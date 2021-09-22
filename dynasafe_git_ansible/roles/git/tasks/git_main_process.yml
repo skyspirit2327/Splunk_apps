@@ -1,0 +1,12 @@
+- block:
+    - set_fact: 
+        git_commit_message: 'host=\"{{ group_names[0] }}\" command=\"{{ single_command }}\" state=\"changed\"'
+    - name: Add changed config
+      shell:
+        cmd: "git add {{ group_names[0] }}-{{ single_command | replace(' ','_') }}.txt"
+        chdir: "{{remote_config_to_path}}"       
+    - name: Commit
+      include_tasks: git_commit.yml     
+    - name: Push
+      include_tasks: git_push.yml 
+  delegate_to: "{{remote_config_to_ip}}"

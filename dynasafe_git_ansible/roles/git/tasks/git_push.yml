@@ -1,0 +1,12 @@
+- name: Git push
+  shell:
+    cmd: "git push {{git_repository | replace('//','//' + git_username + ':' + git_password + '@') }}"
+    chdir: "{{remote_config_to_path}}"
+  register: push_status
+  changed_when:
+    - "push_status.rc==0"
+    - "'Everything up-to-date' not in push_status.stdout"
+  failed_when:
+    - "push_status.rc!=0"
+    - "'Everything up-to-date' not in push_status.stdout"
+

@@ -1,0 +1,11 @@
+- name: Git Remote
+  shell:
+    cmd: git remote add origin {{git_repository}}
+    chdir: "{{remote_config_to_path}}"
+  register: remote_status
+  changed_when:
+    - "remote_status.rc==0"
+    - "'remote origin already exists' in remote_status.stdout"
+  failed_when:
+    - "remote_status.rc!=0"
+    - "'remote origin already exists' in remote_status.stdout"

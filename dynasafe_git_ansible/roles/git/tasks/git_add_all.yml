@@ -1,0 +1,6 @@
+---
+
+- name: Add all
+  shell:
+    cmd: git add .gitignore;git add --all
+    chdir: "{{remote_config_to_path}}"

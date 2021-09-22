@@ -1,0 +1,13 @@
+---
+
+- name: Git commit 
+  shell:
+    cmd: "git commit -m \"{{git_commit_message}}\""
+    chdir: "{{remote_config_to_path}}"
+  register: commit_status
+  changed_when: 
+    - "commit_status.rc==0"
+    - "('nothing to commit' not in commit_status.stdout) and ('no changes added to commit' not in commit_status.stdout)"
+  failed_when:
+    - "commit_status.rc!=0"
+    - "('nothing to commit' not in commit_status.stdout) and ('no changes added to commit' not in commit_status.stdout)"

@@ -1,0 +1,9 @@
+---
+become_status: no
+git_repository: http://10.254.11.5/johnlee2327/remote_config.git
+git_username: johnlee2327
+git_password: lion920279
+remote_config_to_ip: 10.254.12.28
+remote_config_to_path: /remote_config
+remove_annotation_in_config: True
+clean_config_after_push: True

@@ -1,0 +1,7 @@
+---
+- name: init git repository
+  shell: 
+    cmd: |
+      git init
+      git config user.name '{{git_username}}'
+    chdir: "{{remote_config_to_path}}" 

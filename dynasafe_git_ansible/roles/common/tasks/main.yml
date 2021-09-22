@@ -1,0 +1,9 @@
+---
+
+- include: remote_config_by_command.yml single_command={{item}}
+  with_items: "{{ command.split(';') }}"
+  
+
+
+
+  

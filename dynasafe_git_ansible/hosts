@@ -1,0 +1,21 @@
+all:
+  children:          
+    f5_01:
+      hosts:
+        192.168.51.66
+      vars:
+        ansible_user: splunk
+        ansible_ssh_pass: 1qazXSW@
+        command: "tmsh show running-config sys;tmsh show running-config auth"
+        
+
+    cp_01:
+      hosts:
+        192.168.84.100
+      vars:
+        ansible_user: admin
+        ansible_ssh_pass: dyna0808
+        command: "show configuration"
+
+        
+

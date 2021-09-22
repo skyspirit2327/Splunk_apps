@@ -1,0 +1,27 @@
+---
+
+- name: Automatically remote config
+  hosts: all
+  gather_facts: no
+  roles:
+    - { role: common, become: "{{become_status}}"}
+    
+- name: Automatically commit and push
+  hosts: all
+  serial: 1
+  gather_facts: no
+  roles:
+    - { role: git, become: "{{become_status}}"}
+
+
+- name: Remove config after push
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Remove config after push
+      shell:
+        cmd: "rm -f *.txt"
+        chdir: "{{remote_config_to_path}}"
+      when: "clean_config_after_push == True"
+      delegate_to: "{{remote_config_to_ip}}"
+

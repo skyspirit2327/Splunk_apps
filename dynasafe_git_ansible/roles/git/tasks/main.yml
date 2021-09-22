@@ -1,0 +1,13 @@
+---
+
+- include: git_main_process.yml single_command={{item}}
+  with_items: "{{ command.split(';') }}" 
+
+
+
+
+
+
+
+
+  

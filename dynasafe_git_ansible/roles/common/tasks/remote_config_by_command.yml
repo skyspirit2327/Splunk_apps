@@ -1,0 +1,22 @@
+---
+
+- name: Get config by command without ssh key exchanged (need linux sshpass package)
+  shell:
+    cmd: |
+      sshpass -p {{ansible_ssh_pass}} ssh -o StrictHostKeyChecking=no {{ansible_user}}@{{inventory_hostname}} '{{single_command}}'
+  register: config_content
+  delegate_to: "{{ remote_config_to_ip }}"
+  
+- name: Copy Config
+  copy:
+    content: "{{ config_content.stdout }}"
+    dest: "{{ remote_config_to_path }}/{{ group_names[0] }}-{{single_command | replace(' ','_')}}.txt"
+  delegate_to: "{{ remote_config_to_ip }}"
+  
+- name: Remove annotaition
+  replace:
+    path: "{{ remote_config_to_path }}/{{ group_names[0] }}-{{single_command | replace(' ','_')}}.txt"
+    regexp: '^\s*#.*$'
+    replace: '' 
+  when: "remove_annotation_in_config == True"
+  delegate_to: "{{ remote_config_to_ip }}"

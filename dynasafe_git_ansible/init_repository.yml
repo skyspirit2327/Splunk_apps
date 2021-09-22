@@ -1,0 +1,60 @@
+---
+
+- name: init git repository
+  hosts: localhost
+  gather_facts: no
+  vars_prompt:
+
+    - name: init_check
+      prompt: "Are you sure to INIT the repository ?(yes/no)"
+      private: no
+ 
+  pre_tasks:
+    - name: change check
+      any_errors_fatal: yes
+      fail:
+        msg: "Check fail.Please reprocess the playbook."
+      when: 
+        - "init_check!='yes'"  
+  tasks:  
+    - set_fact:
+        git_commit_message: "Init repository"      
+
+    - name: Create git repository if it does not exist
+      file:
+        path: "{{remote_config_to_path}}"
+        state: directory
+        mode: '0755'
+      delegate_to: "{{remote_config_to_ip}}"
+    
+    - name: check git status
+      shell: 
+        cmd: git status
+        chdir: "{{remote_config_to_path}}"
+      register: git_status
+      delegate_to: "{{remote_config_to_ip}}"
+      changed_when:
+        - "'ot a git repository' in git_status.stderr"       
+      failed_when:
+        - "git_status.rc != 0"
+        - "'ot a git repository' not in git_status.stderr"
+         
+    - block:   
+        - name: Init git
+          include_tasks: roles/git/tasks/git_init.yml
+              
+        - name: Add all
+          include_tasks: roles/git/tasks/git_add_all.yml
+            
+        - name: Commit
+          include_tasks: roles/git/tasks/git_commit.yml
+
+        - name: Remote
+          include_tasks: roles/git/tasks/git_remote.yml
+          
+        - name: Push
+          include_tasks: roles/git/tasks/git_push.yml  
+      delegate_to: "{{remote_config_to_ip}}"          
+      when: 
+        - "'ot a git repository' in git_status.stderr" 
+
